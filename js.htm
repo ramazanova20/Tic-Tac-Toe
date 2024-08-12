@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <style>
+        table { border-collapse: collapse; margin: 10vh auto; }
+        td { width: 100px; height: 100px; text-align: center; 
+        border: 1px solid #333; font: bold 2em Arial; cursor: pointer; }
+        h1 {
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        .winner { background: green; color: white; }
+        .tie { background: orange; color: white; }
+    </style>
+</head>
+<body>
+    <table id="cvd"></table>
+    <h1 id="ntc"></h1>
+
+    <script>
+        const cvd = document.querySelector("#cvd");
+        const ntc = document.querySelector("#ntc");
+        let kod = '';
+        let simvol = 'X';
+        let saniye = 16;
+        let timer = setInterval(count, 1000);
+
+        // Create the game board
+        for (let i = 1; i <= 3; i++) {
+            kod += "<tr>";
+            for (let j = 1; j <= 3; j++) {
+                kod += `<td onclick="ok(this)"></td>`;
+            }
+            kod += "</tr>";
+        }
+        cvd.innerHTML = kod;
+
+        function ok(cell) {
+            if (cell.innerHTML === '') {
+                cell.innerHTML = simvol;
+                if (checkWin()) {
+                    gameOver(true);
+                } else if (checkTie()) {
+                    gameOver(false, true);
+                } else {
+                    simvol = simvol === 'X' ? 'O' : 'X';
+                }
+            }
+        }
+
+        function count() {
+            if (saniye > 0) {
+                ntc.innerHTML = `Time left: ${saniye--} seconds`;
+            } else {
+                gameOver(false);
+            }
+        }
+
+        function gameOver(won, tie = false) {
+            clearInterval(timer);
+            if (won) {
+                ntc.classList.add('winner');
+                ntc.innerHTML = `${simvol} wins!`;
+                alert(`${simvol} wins!`);
+            } else if (tie) {
+                ntc.classList.add('tie');
+                ntc.innerHTML = "It's a tie!";
+                alert("It's a tie!");
+            } else {
+                ntc.innerHTML = "Game Over!";
+                alert("Time's up! Game Over!");
+            }
+        }
+
+        function checkWin() {
+            const cells = document.querySelectorAll("td");
+            const combos = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+                [0, 4, 8], [2, 4, 6]  
+            ];
+            return combos.some(combo => {
+                return combo.every(index => cells[index].innerHTML === simvol);
+            });
+        }
+
+        function checkTie() {
+            const cells = document.querySelectorAll("td");
+            return [...cells].every(cell => cell.innerHTML !== '');
+        }
+    </script>
+</body>
+</html>
